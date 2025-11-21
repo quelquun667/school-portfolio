@@ -1,0 +1,2 @@
+Faire le même site portfolio mais d'un style totalement différent : par exemple une carte mère en 2D(violet et noir) avec plusieurs composent qui serait les composant branchés dessus
+Impulsion électriques pour se déplace de section en section grace au cables relier entre les éléments

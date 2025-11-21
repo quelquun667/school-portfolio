@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="main.css">
 </head>
+
 <body>
     <canvas id="network-bg"></canvas>
-    
+
+    <div class="social-sidebar">
+        <a href="https://github.com/" target="_blank" title="GitHub">GH</a>
+        <a href="https://linkedin.com/" target="_blank" title="LinkedIn">IN</a>
+        <a href="mailto:contact@example.com" title="Email">@</a>
+    </div>
+
     <nav class="navbar">
         <div class="logo">PORTFOLIO<span class="dot">.</span></div>
         <ul class="nav-links">
             <li><a href="#home">Accueil</a></li>
             <li><a href="#about">À propos</a></li>
             <li><a href="#skills">Compétences</a></li>
+            <li><a href="#projects">Projets</a></li>
+            <li><a href="#timeline">Parcours</a></li>
+            <li><a href="https://bases-de-connaissance.duckdns.org/" target="_blank" class="external-link">Base de
+                    Connaissances ↗</a></li>
+            <li><a href="#terminal-section">Terminal</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
     </nav>
 
     <section id="home" class="hero">
@@ -31,19 +49,22 @@
         </div>
     </section>
 
-    <section id="about" class="section">
+    <section id="about" class="section reveal">
         <div class="container">
             <h2 class="section-title">À Propos</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Actuellement en formation à l'<strong>IPI Toulouse</strong>, je me spécialise dans l'administration système et la sécurité des réseaux. Mon objectif est de concevoir des architectures robustes et sécurisées pour répondre aux défis technologiques d'aujourd'hui.</p>
-                    <p>J'allie rigueur technique et curiosité pour rester à jour sur les dernières menaces et solutions de défense.</p>
+                    <p>Actuellement en formation à l'<strong>IPI Toulouse</strong>, je me spécialise dans
+                        l'administration système et la sécurité des réseaux. Mon objectif est de concevoir des
+                        architectures robustes et sécurisées pour répondre aux défis technologiques d'aujourd'hui.</p>
+                    <p>J'allie rigueur technique et curiosité pour rester à jour sur les dernières menaces et solutions
+                        de défense.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="skills" class="section">
+    <section id="skills" class="section reveal">
         <div class="container">
             <h2 class="section-title">Compétences</h2>
             <div class="skills-grid">
@@ -78,7 +99,99 @@
         </div>
     </section>
 
-    <section id="contact" class="section">
+    <section id="projects" class="section reveal">
+        <div class="container">
+            <h2 class="section-title">Projets & Labs</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon">🏗️</div>
+                    <h3>Infrastructure AD</h3>
+                    <p>Déploiement d'un contrôleur de domaine Windows Server 2019, gestion des GPO et utilisateurs.</p>
+                    <div class="tags">
+                        <span>Windows Server</span>
+                        <span>Active Directory</span>
+                        <span>DNS/DHCP</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🔒</div>
+                    <h3>Firewall Pfsense</h3>
+                    <p>Configuration d'un pare-feu Pfsense, mise en place de règles de filtrage et VPN.</p>
+                    <div class="tags">
+                        <span>Pfsense</span>
+                        <span>Firewall</span>
+                        <span>VPN</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🐍</div>
+                    <h3>Scripting Réseau</h3>
+                    <p>Automatisation de sauvegardes de configurations Cisco via Python et Netmiko.</p>
+                    <div class="tags">
+                        <span>Python</span>
+                        <span>Netmiko</span>
+                        <span>Automation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="timeline" class="section reveal">
+        <div class="container">
+            <h2 class="section-title">Parcours</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>IPI Toulouse</h3>
+                        <span class="date">2023 - Présent</span>
+                        <p>Bachelor Administrateur Systèmes et Réseaux. Apprentissage des fondamentaux de
+                            l'infrastructure et de la sécurité.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Stage Technicien Support</h3>
+                        <span class="date">2022</span>
+                        <p>Support niveau 1 & 2, déploiement de postes, gestion de parc informatique.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Baccalauréat STI2D</h3>
+                        <span class="date">2021</span>
+                        <p>Option Systèmes d'Information et Numérique (SIN).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="terminal-section" class="section reveal">
+        <div class="container">
+            <h2 class="section-title">Terminal Interactif</h2>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="close"></span>
+                        <span class="minimize"></span>
+                        <span class="maximize"></span>
+                    </div>
+                    <div class="terminal-title">user@portfolio:~</div>
+                </div>
+                <div class="terminal-body" id="terminal-output">
+                    <div class="welcome-msg">Bienvenue sur le terminal. Tapez 'help' pour voir les commandes
+                        disponibles.</div>
+                    <div class="input-line">
+                        <span class="prompt">user@portfolio:~$</span>
+                        <input type="text" id="terminal-input" autocomplete="off" autofocus>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section reveal">
         <div class="container">
             <h2 class="section-title">Contact</h2>
             <p class="contact-text">Un projet ? Une opportunité ? N'hésitez pas à me contacter.</p>
@@ -92,4 +205,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
