@@ -85,13 +85,21 @@ html {
 /* Social Sidebar */
 .social-sidebar {
     position: fixed;
-    left: 20px;
+    left: 0;
+    /* Attached to left edge */
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     z-index: 100;
+    background-color: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(5px);
+    padding: 15px 10px;
+    border-radius: 0 12px 12px 0;
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    border-left: none;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.5);
 }
 
 .social-sidebar a,
@@ -416,7 +424,6 @@ html {
     background-color: var(--bg-color);
     border: 4px solid var(--primary-color);
     top: 20px;
-    /* Adjusted for better vertical alignment */
     border-radius: 50%;
     z-index: 1;
 }
@@ -430,14 +437,14 @@ html {
 }
 
 .timeline-item:nth-child(odd)::after {
-    right: -11px;
-    /* Centered on the 2px line */
+    right: -16px;
+    /* Perfectly centered (20px width / 2) */
     left: auto;
 }
 
 .timeline-item:nth-child(even)::after {
-    left: -11px;
-    /* Centered on the 2px line */
+    left: -15px;
+    /* Perfectly centered (20px width / 2) */
 }
 
 .timeline-content {
@@ -519,9 +526,14 @@ html {
 }
 
 .command-output {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #e0e0e0;
-    line-height: 1.4;
+    line-height: 1.5;
+    padding-left: 12px;
+    border-left: 2px solid var(--secondary-color);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px;
+    border-radius: 0 4px 4px 0;
 }
 
 .command-output ul {

@@ -11,7 +11,7 @@ function resize() {
 }
 
 // --- Cyber Hex Shield Animation ---
-const hexSize = 30;
+const hexSize = 15;
 const hexHeight = hexSize * 2;
 const hexWidth = Math.sqrt(3) * hexSize;
 const vertDist = hexHeight * 0.75;
@@ -64,8 +64,8 @@ class Hexagon {
             const dy = this.y - mouseY;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < 150) {
-                this.intensity += (1 - dist / 150) * 0.2;
+            if (dist < 80) {
+                this.intensity += (1 - dist / 80) * 0.2;
             }
         }
 
