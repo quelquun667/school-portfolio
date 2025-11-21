@@ -36,7 +36,8 @@ html {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
+    background: #050505;
+    /* Darker background for neon contrast */
 }
 
 /* Navbar */
@@ -93,21 +94,99 @@ html {
     z-index: 100;
 }
 
-.social-sidebar a {
+.social-sidebar a,
+.email-trigger {
     color: var(--text-color);
     text-decoration: none;
-    font-weight: 700;
-    font-size: 1.2rem;
     transition: 0.3s;
     opacity: 0.7;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
 }
 
-.social-sidebar a:hover {
+.social-sidebar a:hover,
+.email-trigger:hover {
     color: var(--primary-color);
     opacity: 1;
     text-shadow: 0 0 10px var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Toast Notification */
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1001;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.toast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }
 
 /* Sections */
@@ -328,15 +407,16 @@ html {
     width: 50%;
 }
 
+/* Centering dots on the line */
 .timeline-item::after {
     content: '';
     position: absolute;
     width: 20px;
     height: 20px;
-    right: -10px;
     background-color: var(--bg-color);
     border: 4px solid var(--primary-color);
-    top: 15px;
+    top: 20px;
+    /* Adjusted for better vertical alignment */
     border-radius: 50%;
     z-index: 1;
 }
@@ -349,8 +429,15 @@ html {
     left: 50%;
 }
 
+.timeline-item:nth-child(odd)::after {
+    right: -11px;
+    /* Centered on the 2px line */
+    left: auto;
+}
+
 .timeline-item:nth-child(even)::after {
-    left: -10px;
+    left: -11px;
+    /* Centered on the 2px line */
 }
 
 .timeline-content {
@@ -429,6 +516,26 @@ html {
     height: 300px;
     overflow-y: auto;
     font-size: 0.95rem;
+}
+
+.command-output {
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+.command-output ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+.command-output li::before {
+    content: '> ';
+    color: var(--primary-color);
+}
+
+.command-output strong {
+    color: var(--accent-color);
 }
 
 .input-line {

@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | Systèmes, Réseaux & Sécurité</title>
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Portfolio | Systèmes, Réseaux & Sécurité">
+    <meta property="og:description"
+        content="Expertise en infrastructure, virtualisation et cybersécurité. Découvrez mes projets et compétences.">
+    <meta property="og:image" content="og_preview_image.png">
+    <meta property="og:url" content="https://portfolio-noah.org">
+    <meta property="og:type" content="website">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -15,10 +24,33 @@
     <canvas id="network-bg"></canvas>
 
     <div class="social-sidebar">
-        <a href="https://github.com/" target="_blank" title="GitHub">GH</a>
-        <a href="https://linkedin.com/" target="_blank" title="LinkedIn">IN</a>
-        <a href="mailto:contact@example.com" title="Email">@</a>
+        <a href="https://github.com/quelquun667" target="_blank" title="GitHub" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                </path>
+            </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/noah-granizo/" target="_blank" title="LinkedIn" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+        </a>
+        <div class="email-trigger" title="Copier l'email" id="email-copy-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+        </div>
     </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Email copié !</div>
 
     <nav class="navbar">
         <div class="logo">PORTFOLIO<span class="dot">.</span></div>
@@ -184,7 +216,7 @@
                         disponibles.</div>
                     <div class="input-line">
                         <span class="prompt">user@portfolio:~$</span>
-                        <input type="text" id="terminal-input" autocomplete="off" autofocus>
+                        <input type="text" id="terminal-input" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -200,7 +232,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2024 - Portfolio Réseaux & Sécurité. Tous droits réservés.</p>
+        <p>&copy; 2025 - Portfolio Réseaux & Sécurité. Tous droits réservés.</p>
     </footer>
 
     <script src="script.js"></script>
