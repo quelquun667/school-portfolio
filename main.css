@@ -397,6 +397,7 @@ html {
     margin: 0 auto;
 }
 
+/* Vertical Line - Moved to left */
 .timeline::after {
     content: '';
     position: absolute;
@@ -404,66 +405,89 @@ html {
     background: var(--primary-color);
     top: 0;
     bottom: 0;
-    left: 50%;
-    margin-left: -1px;
+    left: 20px;
+    /* Fixed at left */
+    margin-left: 0;
 }
 
 .timeline-item {
-    padding: 10px 40px;
+    padding: 10px 10px 10px 50px;
+    /* Space for line on left */
     position: relative;
     background-color: inherit;
-    width: 50%;
+    width: 100%;
+    /* Full width */
+    left: 0 !important;
+    /* Force left alignment */
 }
 
-/* Centering dots on the line */
+/* Dots - Centered on the left line */
 .timeline-item::after {
     content: '';
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     background-color: var(--bg-color);
-    border: 4px solid var(--primary-color);
-    top: 20px;
+    border: 3px solid var(--primary-color);
+    top: 22px;
+    left: 10px !important;
+    /* Centered on 20px line */
+    right: auto !important;
     border-radius: 50%;
     z-index: 1;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-.timeline-item:nth-child(odd) {
-    left: 0;
-}
-
-.timeline-item:nth-child(even) {
-    left: 50%;
-}
-
-.timeline-item:nth-child(odd)::after {
-    right: -16px;
-    /* Perfectly centered (20px width / 2) */
-    left: auto;
-}
-
-.timeline-item:nth-child(even)::after {
-    left: -15px;
-    /* Perfectly centered (20px width / 2) */
+.timeline-item:hover::after {
+    background-color: var(--primary-color);
+    transform: scale(1.2);
+    box-shadow: 0 0 10px var(--primary-color);
 }
 
 .timeline-content {
-    padding: 20px;
+    padding: 15px 20px;
     background: var(--card-bg);
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.timeline-content:hover {
+    border-color: var(--primary-color);
+    background: rgba(20, 20, 20, 0.8);
 }
 
 .timeline-content h3 {
     color: var(--accent-color);
     margin-bottom: 5px;
+    font-size: 1.1rem;
 }
 
 .timeline-content .date {
     font-size: 0.85rem;
     color: #888;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    /* Remove margin when collapsed */
+}
+
+/* Hover Reveal Effect */
+.timeline-content p {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, opacity 0.3s ease-out, margin-top 0.3s;
+    margin-top: 0;
+    color: #aaa;
+    font-size: 0.95rem;
+}
+
+.timeline-content:hover p {
+    max-height: 200px;
+    /* Enough for text */
+    opacity: 1;
+    margin-top: 10px;
 }
 
 /* Terminal */
