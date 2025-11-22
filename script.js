@@ -2,19 +2,20 @@ const canvas = document.getElementById('network-bg');
 const ctx = canvas.getContext('2d');
 
 let width, height;
-let circuits = [];
+let nodes = [];
+let edges = [];
 let pulses = [];
 
 // Configuration
 const config = {
-    gridSize: 30, // Distance between potential nodes
-    pathCount: 60, // Increased density
-    pulseChance: 0.005, // Reduced frequency
-    pulseSpeed: 3, // Slower, more elegant
-    color: '#8a2be2', // Primary purple
-    baseColor: 'rgba(138, 43, 226, 0.05)', // Faint static color
-    highlightColor: 'rgba(138, 43, 226, 0.4)', // Mouse highlight
-    mouseRadius: 200
+    gridSize: 40, // Reduced size (was 60) for more density
+    pulseCount: 30, // Increased pulse count for the denser grid
+    pulseSpeed: 1.5,
+    color: '#8a2be2',
+    baseColor: 'rgba(138, 43, 226, 0)',
+    highlightColor: 'rgba(138, 43, 226, 0.4)',
+    mouseRadius: 90,
+    // No drift config needed
 };
 
 // Mouse State
@@ -34,112 +35,85 @@ function resize() {
     height = window.innerHeight;
     canvas.width = width;
     canvas.height = height;
-    initCircuits();
+    initNetwork();
 }
 
 window.addEventListener('resize', resize);
 
-class Circuit {
-    constructor() {
-        this.path = [];
-        this.generatePath();
-        this.highlighted = false;
-    }
-
-    generatePath() {
-        // Start point (snapped to grid)
-        let x = Math.floor(Math.random() * (width / config.gridSize)) * config.gridSize;
-        let y = Math.floor(Math.random() * (height / config.gridSize)) * config.gridSize;
-
-        this.path.push({ x, y });
-
-        // Generate random path (Manhattan style)
-        let length = Math.floor(Math.random() * 15) + 5; // Longer paths
-        let currentX = x;
-        let currentY = y;
-
-        for (let i = 0; i < length; i++) {
-            if (Math.random() > 0.5) {
-                // Move Horizontal
-                currentX += (Math.random() > 0.5 ? 1 : -1) * config.gridSize;
-            } else {
-                // Move Vertical
-                currentY += (Math.random() > 0.5 ? 1 : -1) * config.gridSize;
-            }
-            this.path.push({ x: currentX, y: currentY });
-        }
-    }
-
-    draw() {
-        // Check distance to mouse for highlight
-        let dist = Math.hypot(this.path[0].x - mouse.x, this.path[0].y - mouse.y);
-        this.highlighted = dist < config.mouseRadius;
-
-        ctx.beginPath();
-        ctx.strokeStyle = this.highlighted ? config.highlightColor : config.baseColor;
-        ctx.lineWidth = this.highlighted ? 2 : 1;
-
-        ctx.moveTo(this.path[0].x, this.path[0].y);
-        for (let i = 1; i < this.path.length; i++) {
-            ctx.lineTo(this.path[i].x, this.path[i].y);
-        }
-        ctx.stroke();
-
-        // Draw nodes at corners
-        ctx.fillStyle = this.highlighted ? config.color : config.baseColor;
-        for (let p of this.path) {
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, this.highlighted ? 2 : 1, 0, Math.PI * 2);
-            ctx.fill();
-        }
+class Node {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.neighbors = [];
     }
 }
 
 class Pulse {
-    constructor(circuit) {
-        this.circuit = circuit;
-        this.pathIndex = 0;
-        this.progress = 0; // 0 to 1 between current node and next node
-        this.x = circuit.path[0].x;
-        this.y = circuit.path[0].y;
-        this.dead = false;
+    constructor(startNode) {
+        this.currentNode = startNode;
+        this.targetNode = null;
+        this.previousNode = null;
+        this.progress = 0;
         this.speed = config.pulseSpeed;
-        this.history = []; // For trail effect
+        this.x = this.currentNode.x;
+        this.y = this.currentNode.y;
+        this.history = [];
+        this.opacity = 1;
     }
 
     update() {
-        if (this.pathIndex >= this.circuit.path.length - 1) {
-            this.dead = true;
-            return;
-        }
+        // Movement
+        if (!this.targetNode) {
+            let choices = this.currentNode.neighbors;
 
-        // Store history for trail
-        this.history.push({ x: this.x, y: this.y });
-        if (this.history.length > 10) this.history.shift();
+            // Try to avoid going back if possible
+            if (choices.length > 1 && this.previousNode) {
+                choices = choices.filter(n => n !== this.previousNode);
+            }
 
-        let p1 = this.circuit.path[this.pathIndex];
-        let p2 = this.circuit.path[this.pathIndex + 1];
-
-        let dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
-        this.progress += this.speed / dist;
-
-        if (this.progress >= 1) {
-            this.progress = 0;
-            this.pathIndex++;
-            if (this.pathIndex >= this.circuit.path.length - 1) {
-                this.dead = true;
+            if (choices.length > 0) {
+                this.targetNode = choices[Math.floor(Math.random() * choices.length)];
+            } else if (this.previousNode) {
+                this.targetNode = this.previousNode;
+            } else {
                 return;
             }
-            p1 = this.circuit.path[this.pathIndex];
-            p2 = this.circuit.path[this.pathIndex + 1];
         }
 
-        this.x = p1.x + (p2.x - p1.x) * this.progress;
-        this.y = p1.y + (p2.y - p1.y) * this.progress;
+        if (this.targetNode) {
+            let p1 = this.currentNode;
+            let p2 = this.targetNode;
+
+            let d1 = Math.abs(p2.x - p1.x);
+            let d2 = Math.abs(p2.y - p1.y);
+            let totalDist = d1 + d2;
+
+            if (totalDist === 0) totalDist = 1;
+
+            this.progress += this.speed / totalDist;
+
+            if (this.progress >= 1) {
+                this.previousNode = this.currentNode;
+                this.currentNode = this.targetNode;
+                this.targetNode = null;
+                this.progress = 0;
+            } else {
+                let currentDist = this.progress * totalDist;
+                if (currentDist < d1) {
+                    this.x = p1.x + (p2.x > p1.x ? 1 : -1) * currentDist;
+                    this.y = p1.y;
+                } else {
+                    this.x = p2.x;
+                    this.y = p1.y + (p2.y > p1.y ? 1 : -1) * (currentDist - d1);
+                }
+            }
+        }
+
+        this.history.push({ x: this.x, y: this.y });
+        if (this.history.length > 10) this.history.shift();
     }
 
     draw() {
-        // Draw Trail
         ctx.beginPath();
         ctx.strokeStyle = `rgba(138, 43, 226, 0.5)`;
         ctx.lineWidth = 2;
@@ -152,65 +126,160 @@ class Pulse {
         ctx.lineTo(this.x, this.y);
         ctx.stroke();
 
-        // Draw Head
         ctx.beginPath();
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 10;
         ctx.shadowColor = config.color;
-        ctx.fillStyle = '#fff';
-        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, 1)`;
+        ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
     }
 }
 
-function initCircuits() {
-    circuits = [];
-    for (let i = 0; i < config.pathCount; i++) {
-        circuits.push(new Circuit());
-    }
-}
+function initNetwork() {
+    nodes = [];
+    edges = [];
+    pulses = [];
 
-function animate() {
-    // Trail effect: instead of clearing, draw semi-transparent black
-    ctx.fillStyle = 'rgba(5, 5, 5, 0.1)';
-    ctx.fillRect(0, 0, width, height);
-    // Note: If we want pure clear, use clearRect. 
-    // But for "Tron" trails, the fade is nice. 
-    // However, static circuits need to be redrawn every frame if we do this, 
-    // or they will fade out? 
-    // Actually, if we fillRect, everything fades. 
-    // So we must redraw static circuits every frame on top.
+    let cols = Math.ceil(width / config.gridSize);
+    let rows = Math.ceil(height / config.gridSize);
+    let grid = [];
 
-    // To avoid static circuits becoming too bright or flickering if we draw them every frame with opacity,
-    // we should probably just clearRect if we want a clean look, OR accept the fade.
-    // Let's try clearRect for a cleaner look first, but use a "tail" for the pulse class itself.
-    ctx.clearRect(0, 0, width, height);
-
-    // Draw static circuits
-    circuits.forEach(circuit => circuit.draw());
-
-    // Spawn pulses
-    if (Math.random() < config.pulseChance) {
-        let randomCircuit = circuits[Math.floor(Math.random() * circuits.length)];
-        pulses.push(new Pulse(randomCircuit));
+    for (let y = 0; y < rows; y++) {
+        let row = [];
+        for (let x = 0; x < cols; x++) {
+            let node = new Node(x * config.gridSize, y * config.gridSize);
+            row.push(node);
+            nodes.push(node);
+        }
+        grid.push(row);
     }
 
-    // Mouse interaction: Spawn pulses on nearby circuits
-    if (mouse.x) {
-        circuits.forEach(circuit => {
-            if (circuit.highlighted && Math.random() < 0.01) {
-                pulses.push(new Pulse(circuit));
+    // Determine Random Edge Start Node
+    let startNode;
+    const side = Math.floor(Math.random() * 4); // 0: Top, 1: Right, 2: Bottom, 3: Left
+
+    if (side === 0) { // Top
+        startNode = grid[0][Math.floor(Math.random() * cols)];
+    } else if (side === 1) { // Right
+        startNode = grid[Math.floor(Math.random() * rows)][cols - 1];
+    } else if (side === 2) { // Bottom
+        startNode = grid[rows - 1][Math.floor(Math.random() * cols)];
+    } else { // Left
+        startNode = grid[Math.floor(Math.random() * rows)][0];
+    }
+
+    // Recursive Backtracker
+    let visited = new Set();
+    let stack = [startNode];
+    visited.add(startNode);
+
+    while (stack.length > 0) {
+        let current = stack[stack.length - 1];
+        let gx = Math.round(current.x / config.gridSize);
+        let gy = Math.round(current.y / config.gridSize);
+        let neighbors = [];
+
+        [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dx, dy]) => {
+            let nx = gx + dx;
+            let ny = gy + dy;
+            if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+                let neighbor = grid[ny][nx];
+                if (!visited.has(neighbor)) {
+                    neighbors.push(neighbor);
+                }
+            }
+        });
+
+        if (neighbors.length > 0) {
+            let next = neighbors[Math.floor(Math.random() * neighbors.length)];
+
+            current.neighbors.push(next);
+            next.neighbors.push(current);
+            edges.push({ p1: current, p2: next });
+
+            visited.add(next);
+            stack.push(next);
+        } else {
+            stack.pop();
+        }
+    }
+
+    // Add extra loops for "more routes" (20% of nodes get an extra connection)
+    for (let i = 0; i < nodes.length * 0.2; i++) {
+        let node = nodes[Math.floor(Math.random() * nodes.length)];
+        let gx = Math.round(node.x / config.gridSize);
+        let gy = Math.round(node.y / config.gridSize);
+
+        [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dx, dy]) => {
+            let nx = gx + dx;
+            let ny = gy + dy;
+            if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+                let neighbor = grid[ny][nx];
+                // Connect if not already connected
+                if (!node.neighbors.includes(neighbor)) {
+                    node.neighbors.push(neighbor);
+                    neighbor.neighbors.push(node);
+                    edges.push({ p1: node, p2: neighbor });
+                }
             }
         });
     }
 
-    // Update and draw pulses
-    for (let i = pulses.length - 1; i >= 0; i--) {
-        pulses[i].update();
-        pulses[i].draw();
-        if (pulses[i].dead) {
-            pulses.splice(i, 1);
+    // Spawn Pulses at Edge Start
+    for (let i = 0; i < config.pulseCount; i++) {
+        pulses.push(new Pulse(startNode));
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw Edges
+    ctx.lineWidth = 2;
+    for (let edge of edges) {
+        let p1 = edge.p1;
+        let p2 = edge.p2;
+
+        let midX = (p1.x + p2.x) / 2;
+        let midY = (p1.y + p2.y) / 2;
+
+        let distMouse = Math.hypot(midX - mouse.x, midY - mouse.y);
+        let opacityMouse = Math.max(0, 1 - (distMouse / config.mouseRadius));
+
+        let opacityPulse = 0;
+        for (let pulse of pulses) {
+            let distPulse = Math.hypot(midX - pulse.x, midY - pulse.y);
+            let op = Math.max(0, 1 - (distPulse / 150));
+            if (op > opacityPulse) opacityPulse = op;
         }
+
+        let opacity = Math.max(opacityMouse, opacityPulse);
+        opacity = Math.pow(opacity, 2);
+
+        if (opacity > 0.01) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(138, 43, 226, ${opacity})`;
+
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+
+            ctx.stroke();
+
+            if (opacity > 0.3) {
+                ctx.fillStyle = `rgba(138, 43, 226, ${opacity})`;
+                ctx.beginPath();
+                ctx.arc(p1.x, p1.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+
+    // Update Pulses
+    for (let pulse of pulses) {
+        pulse.update();
+        pulse.draw();
     }
 
     requestAnimationFrame(animate);
